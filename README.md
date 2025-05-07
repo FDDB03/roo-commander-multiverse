@@ -1,5 +1,7 @@
 # Project Configuration Structure (`.roo` and `.ruru`)
 
+Inspired From: https://github.com/jezweb/roo-commander.git
+
 This document provides an overview of the configuration directories (`.roo`, `.ruru`) and the custom mode definition file (`.roomodes`) used in this project.
 
 ## `.roo` Directory
