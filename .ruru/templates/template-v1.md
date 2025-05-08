@@ -1,6 +1,6 @@
 +++
-id = "{TIMESTAMP_ID}" # Placeholder replaced by YYYYMMDDHHMMSS timestamp during manual save
-status = "pending" # Options: ⏳ pending, 🚧 in-progress, 🛑 blocked, 👀 review, ✅ done, ❌ cancelled
+id = "{TIMESTAMP_ID}" # Placeholder replaced by YYYYMMDDHHMMSS timestamp by delegator
+status = "TASK_INITIATED" # Initial status set by delegator. Options: TASK_INITIATED, TASK_RECEIVED, PROCESSING_STARTED, 🛑 blocked, 👀 review, ✅ done, ❌ cancelled
 assignee = "{mode-slug}"
 reporter_mode = "{current-mode-slug}" # Mode creating the task
 tags = ["{tag1}", "{tag2}"]
