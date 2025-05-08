@@ -80,21 +80,76 @@ See the [Project Journaling Guide](../../../.ruru/guides/JOURNALING_GUIDE.md) fo
 **Rationale:** Establishes a standard process for requesting reviews, ensuring clarity for the reviewer and trackability of the review process.
 
 
-## Task Persistence Guideline (Assignee Saves - Workaround)
+## Task Persistence and Delegation Guideline
 
-**Guideline:** Due to current system limitations where tasks created via `<new_task>` are not automatically saved by the system and the auto-generated ID is not consistently returned or usable for immediate file naming, the mode *assigned* a new task (the `assignee`) **MUST** manually save the received task message payload to a file as one of its initial actions upon receiving the task.
+**Guideline:** This guideline outlines the process for creating, delegating, and persisting tasks initiated via the `<new_task>` tool. The *delegating (reporter)* mode is responsible for creating the physical task file.
 
 **Procedure:**
 
-1.  Upon receiving a new task message payload (e.g., from the system after another mode used `<new_task>`):
-2.  Identify its own mode slug (this will be the `{assignee_slug}` for the filename).
-3.  Generate a current timestamp string in `YYYYMMDDHHMMSS` format (let's call this `timestamp_str`).
-4.  Construct the filename: `.ruru/tasks/TASK-{assignee_slug}-{timestamp_str}.md` (replace `{assignee_slug}` with the mode's own slug and `{timestamp_str}` with the generated timestamp).
-5.  Take the received task message payload.
-6.  Replace any placeholder `id` (e.g., `"{AUTO_INCREMENT}"`, `"{TIMESTAMP_ID}"`) within the payload's frontmatter with the generated `timestamp_str`.
-7.  Use the `<write_to_file>` tool to save the *modified* task message payload to the constructed filename. The `<write_to_file>` tool will create the `.ruru/tasks/` directory if it doesn't exist.
+**A. Delegating (Reporter) Mode Responsibilities:**
 
-**Rationale:** Ensures task persistence despite the lack of automatic system saving, providing a record of received and assigned work with a unique filename and a corresponding unique ID within the file content. This is a workaround until the system implements automatic task saving with ID-based naming as described in the `TASK_STORAGE_GUIDE.md`. The responsibility for saving is placed on the assignee to ensure the task is recorded before work commences by the responsible mode.
+1.  **Prepare Task Content:**
+    *   Fetch the standard task template (e.g., from `\.ruru/templates/template-v1.md`).
+    *   Populate all necessary fields, including `assignee` (the target mode slug) and `reporter_mode` (its own slug).
+    *   Set the initial `status` in the task content to `TASK_INITIATED` (or an equivalent status indicating creation by the delegator).
+
+2.  **Generate Unique Task ID:**
+    *   Create a `YYYYMMDDHHMMSS` timestamp string. This timestamp will serve as the unique `TaskID`.
+
+3.  **Update Task Content with ID:**
+    *   In the prepared task content, replace the placeholder for `id` (e.g., `"{TIMESTAMP_ID}"` or `"{AUTO_INCREMENT}"`) with the generated `TaskID`.
+
+4.  **Construct Filename:**
+    *   The standard filename convention is: `\.ruru/tasks/TASK-{AssigneeSlug}-{TaskID}.md`.
+        *   Example: `\.ruru/tasks/TASK-agent-mcp-manager-20250508120000.md`.
+
+5.  **Write Task File:**
+    *   Use the `<write_to_file>` tool to save the fully prepared task content (with the `TaskID` embedded) to the constructed file path.
+    *   **Error Handling:**
+        *   If `<write_to_file>` fails, log the error. Attempt a limited number of retries (e.g., 2) for transient issues.
+        *   If retries fail, the delegation process for this task must halt. Log this critical failure.
+
+6.  **Delegate Task via `<new_task>`:**
+    *   Only proceed if the task file was successfully written.
+    *   The `mode` parameter of `<new_task>` should be the `AssigneeSlug`.
+    *   The `message` parameter should be a JSON object containing a reference to the task file and the TaskID:
+        ```json
+        {
+          "task_file_path": "\.ruru/tasks/TASK-{AssigneeSlug}-{TaskID}.md",
+          "task_id": "{TaskID}"
+        }
+        ```
+    *   **Error Handling:**
+        *   If `<new_task>` fails, log the error. Attempt limited retries.
+        *   If `<new_task>` fails persistently *after* the task file was successfully written, this creates an orphaned task file. Log this critical inconsistency.
+
+**B. Assignee Mode Responsibilities:**
+
+1.  **Receive Task Reference:**
+    *   The assignee mode will receive the JSON message from the `<new_task>` tool.
+    *   Parse the `task_file_path` and `task_id` from the message.
+    *   Validate the received JSON structure. If malformed, log an error and consider notifying the delegator (e.g., by creating a new task back to the `reporter_mode` specified in the original, if accessible, or logging for manual review).
+
+2.  **Read Task File:**
+    *   Use the `<read_file>` tool to read the content of the task file specified by `task_file_path`.
+    *   **Error Handling:** If `<read_file>` fails (e.g., file not found, permission issues), log a critical error. The task cannot be processed. Notify the delegator if a mechanism exists.
+
+3.  **Idempotency Check:**
+    *   Using the `task_id` from the message (which should also match the `id` field within the task file), check if this task has already been processed or is currently in progress. (Mechanism: e.g., maintain a local log/cache of processed TaskIDs, or check for specific status markers in the task file if it's updated reliably).
+    *   If the task is a duplicate and already completed or in a terminal state, log this, acknowledge if necessary, and do not reprocess.
+    *   If it's a duplicate and still in an active state (e.g. `PROCESSING_STARTED`), the mode should decide based on its capabilities whether to resume or report an issue.
+
+4.  **Update Task Status (Initial):**
+    *   If the task is new and valid, update the `status` field within the task file (e.g., from `TASK_INITIATED` to `TASK_RECEIVED` or `PROCESSING_STARTED`) using `<apply_diff>` or `<write_to_file>` (with full content).
+
+5.  **Process Task:**
+    *   Execute the task as described in its content. Validate task content against expected structure/schema if possible.
+
+6.  **Update Task Status (Final) & Provide Feedback:**
+    *   Upon completion or failure, update the `status` in the task file (e.g., `TASK_COMPLETED`, `TASK_FAILED`).
+    *   Provide feedback to the delegator (e.g., by creating a new task for the original `reporter_mode`, referencing the `task_id` and outcome).
+
+**Rationale:** This revised process shifts task file creation to the delegating mode, ensuring the file exists before delegation. It introduces unique TaskIDs (timestamps) for better tracking and idempotency, clarifies the `<new_task>` message format, and incorporates foundational error handling and state management steps. This provides a more robust and traceable task delegation workflow.
 
 
 ## Mode-Specific Rule Naming Convention
