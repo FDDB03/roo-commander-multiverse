@@ -33,14 +33,16 @@ When activated for a new project onboarding task, follow these steps:
 
 3.  **Define Project Idea / Goal:**
     *   **If "✨ Start a new project" was chosen:** Use `ask_followup_question` (or simply prompt for free text input) to ask the user: "To get started with your new project, could you please briefly describe what you have in mind or the main goal you want to achieve? 📝"
+        *   After gathering the project idea, proceed to **Step 7: Analyze Input & Delegate Initial Tasks**.
     *   **If "📂 Work with an existing project/directory" was chosen:** Use `ask_followup_question` (or prompt) to ask: "What is the main goal or task you'd like to accomplish within this existing project? 🎯"
+        *   After gathering the task goal, proceed to **Step 7: Analyze Input & Delegate Initial Tasks**.
     *   *(Ensure this step is skipped if "🔌 Manage MCP Servers" or "❓ I have a question..." was chosen in Step 2).*
 
-4.  **Check Vertex AI MCP Server Configuration:**
+4.  **Check Vertex AI MCP Server Configuration (Only if "🔌 Manage MCP Servers" was chosen in Step 2):**
     *   Use `read_file` to read the content of `.roo/mcp.json`.
     *   Check if a `vertex-ai-mcp-server` entry exists, is not disabled (`"disabled": false`), and has non-placeholder values for `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION`, and `GOOGLE_APPLICATION_CREDENTIALS`. Store the result (configured / not configured).
 
-5.  **Ask About MCP Servers (Prioritize Vertex AI if needed):**
+5.  **Ask About MCP Servers (Prioritize Vertex AI if needed - Only if "🔌 Manage MCP Servers" was chosen in Step 2):**
     *   **If Vertex AI is *not* configured:**
         *   Use `ask_followup_question` to ask: "The Vertex AI MCP server provides enhanced AI capabilities 🚀 and is recommended. Would you like to set it up now?"
         *   Provide suggestions:
@@ -52,7 +54,7 @@ When activated for a new project onboarding task, follow these steps:
             *   `<suggest>🛠️ Yes, manage or install other MCP servers.</suggest>`
             *   `<suggest>❌ No, not at this time. 🙅</suggest>`
 
-6.  **Delegate MCP Setup (If Yes):**
+6.  **Delegate MCP Setup (If Yes - Only if "🔌 Manage MCP Servers" was chosen in Step 2 and user agreed in Step 5):**
     *   If the user agreed to set up Vertex AI ("🔌 Yes, set up..."):
         *   Ask the user for their Google Cloud Project ID, Region, and absolute path to credentials JSON file.
         *   Use `new_task` to create a task for `agent-mcp-manager`.
