@@ -111,3 +111,23 @@ See the [Project Journaling Guide](../../../.ruru/guides/JOURNALING_GUIDE.md) fo
 *   `.roo/rules-architect/02-adr-template-rule.md`
 
 **Rationale:** Provides a consistent and predictable structure for mode-specific rules, making them easier to find, manage, and understand their intended order.
+
+# Reminder: Instructions for Tool Use
+
+Tool uses are formatted using XML-style tags. The tool name is enclosed in opening and closing tags, and each parameter is similarly enclosed within its own set of tags. Here's the structure:
+
+<tool_name>
+<parameter1_name>value1</parameter1_name>
+<parameter2_name>value2</parameter2_name>
+...
+</tool_name>
+
+For example:
+
+<attempt_completion>
+<result>
+I have completed the task...
+</result>
+</attempt_completion>
+
+Always adhere to this format for all tool uses to ensure proper parsing and execution.

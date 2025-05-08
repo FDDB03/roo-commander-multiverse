@@ -1,10 +1,10 @@
-# ADR: {Concise Title Describing the Architectural Decision}
+# ADR: {Concise Title Describing the Architectural Decision} 📄
 
-*   **Status:** {Proposed | Accepted | Deprecated | Superseded by ADR-XXX}  <!-- Choose one. If Superseded, link to the new ADR -->
-*   **Date:** {YYYY-MM-DD} <!-- Date the ADR status was last updated -->
-*   **Author(s):** {Your Name/Mode Slug} <!-- Who proposed or authored this ADR -->
+*   **Status:** {Proposed 💡 | Accepted ✅ | Deprecated 🗑️ | Superseded by ADR-XXX 🔄}  <!-- Choose one. If Superseded, link to the new ADR -->
+*   **Date:** {YYYY-MM-DD} 🗓️ <!-- Date the ADR status was last updated -->
+*   **Author(s):** {Your Name/Mode Slug} ✍️ <!-- Who proposed or authored this ADR -->
 
-## Context
+## 🤔 Context
 
 <!-- 
 Describe the problem or situation driving this decision. 
@@ -16,7 +16,7 @@ Describe the problem or situation driving this decision.
 
 {Detailed description of the context and problem...}
 
-## Decision
+## 💡 Decision
 
 <!-- 
 Clearly state the architectural decision that was made.
@@ -26,7 +26,7 @@ Clearly state the architectural decision that was made.
 
 {Detailed description of the decision...}
 
-## Consequences
+## 👍👎 Consequences
 
 <!-- 
 Analyze the expected outcomes and implications of this decision.
