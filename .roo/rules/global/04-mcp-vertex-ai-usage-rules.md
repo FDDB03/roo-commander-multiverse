@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Global Rules: Vertex AI MCP Server Usage
 
 This file contains global rules and guidelines for utilizing the `vertex-ai-mcp-server` tools, particularly focusing on selecting the appropriate tool for information retrieval tasks.
@@ -68,7 +67,7 @@ graph TD
 
 ## 4. General Considerations
 *   **Specificity:** Provide clear and specific `query` and `topic` (where applicable) parameters for better results.
-=======
+*   **Iteration:** If the first tool chosen doesn't yield the desired result, re-evaluate the query and consider trying a different, more appropriate tool based on these guidelines.
 # Global Rules: Vertex AI MCP Server Usage
 
 This file contains global rules and guidelines for utilizing the `vertex-ai-mcp-server` tools, particularly focusing on selecting the appropriate tool for information retrieval tasks.
@@ -138,5 +137,4 @@ graph TD
 
 ## 4. General Considerations
 *   **Specificity:** Provide clear and specific `query` and `topic` (where applicable) parameters for better results.
->>>>>>> 33f0c0831282bda3b787cb1fce7be9f405d95b56
 *   **Iteration:** If the first tool chosen doesn't yield the desired result, re-evaluate the query and consider trying a different, more appropriate tool based on these guidelines.
