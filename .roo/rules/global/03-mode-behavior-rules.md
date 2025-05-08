@@ -89,7 +89,7 @@ See the [Project Journaling Guide](../../../.ruru/guides/JOURNALING_GUIDE.md) fo
 **A. Delegating (Reporter) Mode Responsibilities:**
 
 1.  **Prepare Task Content:**
-    *   Fetch the standard task template (e.g., from `\.ruru/templates/template-v1.md`).
+    *   Fetch the standard task template (e.g., from `.ruru/templates/template-v1.md`).
     *   Populate all necessary fields, including `assignee` (the target mode slug) and `reporter_mode` (its own slug).
     *   Set the initial `status` in the task content to `TASK_INITIATED` (or an equivalent status indicating creation by the delegator).
 
@@ -100,8 +100,8 @@ See the [Project Journaling Guide](../../../.ruru/guides/JOURNALING_GUIDE.md) fo
     *   In the prepared task content, replace the placeholder for `id` (e.g., `"{TIMESTAMP_ID}"` or `"{AUTO_INCREMENT}"`) with the generated `TaskID`.
 
 4.  **Construct Filename:**
-    *   The standard filename convention is: `\.ruru/tasks/TASK-{AssigneeSlug}-{TaskID}.md`.
-        *   Example: `\.ruru/tasks/TASK-agent-mcp-manager-20250508120000.md`.
+    *   The standard filename convention is: `.ruru/tasks/TASK-{AssigneeSlug}-{TaskID}.md`.
+        *   Example: `.ruru/tasks/TASK-agent-mcp-manager-20250508120000.md`.
 
 5.  **Write Task File:**
     *   Use the `<write_to_file>` tool to save the fully prepared task content (with the `TaskID` embedded) to the constructed file path.
@@ -115,7 +115,7 @@ See the [Project Journaling Guide](../../../.ruru/guides/JOURNALING_GUIDE.md) fo
     *   The `message` parameter should be a JSON object containing a reference to the task file and the TaskID:
         ```json
         {
-          "task_file_path": "\.ruru/tasks/TASK-{AssigneeSlug}-{TaskID}.md",
+          "task_file_path": ".ruru/tasks/TASK-{AssigneeSlug}-{TaskID}.md",
           "task_id": "{TaskID}"
         }
         ```
@@ -147,7 +147,7 @@ See the [Project Journaling Guide](../../../.ruru/guides/JOURNALING_GUIDE.md) fo
 
 6.  **Update Task Status (Final) & Provide Feedback:**
     *   Upon completion or failure, update the `status` in the task file (e.g., `TASK_COMPLETED`, `TASK_FAILED`).
-    *   Provide feedback to the delegator (e.g., by creating a new task for the original `reporter_mode`, referencing the `task_id` and outcome).
+    *   Provide feedback to the delegator (e.g., by creating a new task for the original `reporter_mode`, referencing the `task_id`, outcome, and **explicit paths/links to any significant artifacts created or modified**).
 
 **Rationale:** This revised process shifts task file creation to the delegating mode, ensuring the file exists before delegation. It introduces unique TaskIDs (timestamps) for better tracking and idempotency, clarifies the `<new_task>` message format, and incorporates foundational error handling and state management steps. This provides a more robust and traceable task delegation workflow.
 

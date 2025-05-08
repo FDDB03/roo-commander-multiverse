@@ -4,23 +4,25 @@ This file contains global rules and guidelines related to task creation, assignm
 
 ## Task Creation Template Enforcement
 
-**Rule:** The *content* of the task file created by the delegating mode **MUST** conform to the structure defined in the standard task template located at `\.ruru/templates/template-v1.md`. The `new_task` tool itself now takes a JSON reference to this file.
+**Rule:** The *content* of the task file created by the delegating mode **MUST** conform to the structure defined in the standard task template located at `.ruru/templates/template-v1.md`. The `new_task` tool itself now takes a JSON reference to this file.
     *   This includes utilizing the suggested emojis within the string values for fields like `status` and `priority` when applicable (e.g., `status = "✅ done"`, `priority = "🔥 High"`), as indicated by the options in the template comments.
 
 **Rationale:** Ensures consistency in task definition across all modes, facilitating better tracking and management, even though the `new_task` message format has changed.
 
 **Template Reference (`.ruru/templates/template-v1.md`):**
 ```markdown
-+++
-id = "{TIMESTAMP_ID}" # Placeholder replaced by YYYYMMDDHHMMSS timestamp by delegator
-status = "TASK_INITIATED" # Initial status set by delegator. Options: TASK_INITIATED, TASK_RECEIVED, PROCESSING_STARTED, 🛑 blocked, 👀 review, ✅ done, ❌ cancelled
-assignee = "{mode-slug}"
-reporter_mode = "{current-mode-slug}" # Mode creating the task
-tags = ["{tag1}", "{tag2}"]
-priority = "Medium"  # Options: 🔥 High, 🔶 Medium, 🟢 Low
+---
+id: "{TIMESTAMP_ID}" # Placeholder replaced by YYYYMMDDHHMMSS timestamp by delegator
+status: "TASK_INITIATED" # Initial status set by delegator. Options: TASK_INITIATED, TASK_RECEIVED, PROCESSING_STARTED, 🛑 blocked, 👀 review, ✅ done, ❌ cancelled
+assignee: "{mode-slug}"
+reporter_mode: "{current-mode-slug}" # Mode creating the task
+tags:
+  - "{tag1}"
+  - "{tag2}"
+priority: "Medium"  # Options: 🔥 High, 🔶 Medium, 🟢 Low
 # ... other template fields ...
-template_version = "1.5" # Example version
-+++
+template_version: "1.6-yaml" # Example version reflecting YAML format
+---
 
 # {Task Title} 📌
 
@@ -30,7 +32,7 @@ template_version = "1.5" # Example version
 
 **Example `new_task` Usage (New Flow):**
 
-*Delegating mode first creates the task file (e.g., `\.ruru/tasks/TASK-some-mode-slug-20250508123000.md`) with content conforming to the template, including setting the `id` and initial `status`.*
+*Delegating mode first creates the task file (e.g., `.ruru/tasks/TASK-some-mode-slug-20250508123000.md`) with content conforming to the template, including setting the `id` and initial `status`.*
 
 *Then, the delegating mode uses `new_task` like this:*
 ```xml
@@ -38,7 +40,7 @@ template_version = "1.5" # Example version
   <mode>some-mode-slug</mode>
   <message>
 {
-  "task_file_path": "\.ruru/tasks/TASK-some-mode-slug-20250508123000.md",
+  "task_file_path": ".ruru/tasks/TASK-some-mode-slug-20250508123000.md",
   "task_id": "20250508123000"
 }
   </message>
@@ -96,6 +98,6 @@ template_version = "1.5" # Example version
     *   Example: Change `- [ ] Implement API endpoint` to `- [x] Implement API endpoint` upon completion.
 4.  **Report Blockers:** If blocked, update the status to `blocked` and clearly state the blocker in the task file description or comments. Consider creating a new task for the `reporter_mode` or relevant lead to resolve the blocker.
 5.  **Request Clarification:** If context in the task file is insufficient, use `ask_followup_question` directed at the `reporter_mode` or create a clarification task.
-6.  **Report Completion & Feedback:** Upon completion, update the status to `done` (or `review`) in the task file. Provide feedback to the original `reporter_mode` (e.g., by creating a new task referencing the original `task_id` and outcome).
+6.  **Report Completion & Feedback:** Upon completion, update the status to `done` (or `review`) in the task file. Provide feedback to the original `reporter_mode` (e.g., by creating a new task referencing the original `task_id`, outcome, and **explicit paths/links to any significant artifacts created or modified**).
 
 **Rationale:** Improves visibility into task progress, facilitates proactive blocker resolution, and mimics standard team communication protocols around assigned work, adapted to the file-based task reference flow.
